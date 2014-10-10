@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<script type="text/javascript" src="scripts/jquery.min.js">
+</script>
+<script type="text/javascript" src="scripts/cookie_util.js">
+</script>
+<script type="text/javascript" src="scripts/base64.js">
+</script>
+
+<script type="text/javascript" src="scripts/baseValue.js">
+</script>
+<script type="text/javascript">
+	$(function(){
+		
+		$("#login").click(function(){
+			var name=$("#count").val();
+			var pwd=$("#password").val();
+			$("#count_span").html("");
+			$("#password_span").html("");
+			var ok=true;
+			if(name==""){
+				$("#count_span").html("用户名不能为空");
+				ok=false;
+			}
+			if(pwd==""){
+				$("#password_span").html("密码不能为空");
+				ok=false;
+			}
+			if(ok){
+				//对用户名和密码进行Base64加密
+		        function makeauth(user,password){
+					var tok=user+":"+password;
+					var hash=Base64.encode(tok);
+					return "Basic "+hash;
+				}
+				$.ajax({
+					url:"http://localhost:8080/testNoteServer/login/checklogin",
+					type:"post",
+					beforeSend:function(xhr){
+						//将加密后的用户名和密码加载到请求头上
+						var author = makeauth(name,pwd);
+						xhr.setRequestHeader("Authorization",author);
+					},
+					success:function(data){
+						if(data.status=="1"){
+							$("#count_span").html(data.message);
+						}
+						else if(data.status=="2"){
+							$("#password_span").html(data.message);
+						}
+						else if(data.status=="0"){
+							//将令牌存入Cookie
+							var uid = data.data.id;
+							var token = data.data.token;
+							var key = uid+"_token";
+							addCookie(key,Base64.encode(token),2);//cookie中的key为uid_token,value为加密后的token,cookie的有效时长为2个小时
+							window.location.href="edit.html";
+						}
+					}
+				});				
+			}
+		});	
+	});
+</script>
+
+<link rel="stylesheet" href="styles/login.css" />
+</head>
+<body>
+	<div class="global">
+		<div class="log log_in" tabindex='-1' id='dl'>
+			<dl>
+				<dt>
+					<div class='header'>
+						<h3>登&nbsp;录</h3>
+					</div>
+				</dt>
+				<dt></dt>
+				<dt>
+					<div class='letter'>
+						用户名:&nbsp;<input type="text" name="" id="count" tabindex='1' /> <span
+							id="count_span"></span>
+					</div>
+				</dt>
+				<dt>
+					<div class='letter'>
+						密&nbsp;&nbsp;&nbsp;码:&nbsp;<input type="password" name=""
+							id="password" tabindex='2' /> <span id="password_span"></span>
+					</div>
+				</dt>
+				<dt>
+					<div>
+						<input type="button" name="" id="login" value='&nbsp登&nbsp录&nbsp'
+							tabindex='3' /> <input type="button" name="" id="sig_in"
+							value='&nbsp注&nbsp册&nbsp' tabindex='4' />
+					</div>
+				</dt>
+			</dl>
+		</div>
+		<div class="sig sig_out" tabindex='-1' id='zc'
+			style='visibility:hidden;'>
+			<dl>
+				<dt>
+					<div class='header'>
+						<h3>注&nbsp;册</h3>
+					</div>
+				</dt>
+				<dt></dt>
+				<dt>
+					<div class='letter'>
+						用户名:&nbsp;<input type="text" name="" id="regist_username"
+							tabindex='5' />
+						<div class='warning' id='warning_1'>
+							<span>该用户名不可用</span>
+						</div>
+					</div>
+				</dt>
+				<dt>
+					<div class='letter'>
+						昵&nbsp;&nbsp;&nbsp;称:&nbsp;<input type="text" name=""
+							id="nickname" tabindex='6' />
+					</div>
+				</dt>
+				<dt>
+					<div class='letter'>
+						密&nbsp;&nbsp;&nbsp;码:&nbsp;<input type="password" name=""
+							id="regist_password" tabindex='7' />
+						<div class='warning' id='warning_2'>
+							<span>密码长度过短</span>
+						</div>
+					</div>
+				</dt>
+				<dt>
+					<div class='password'>
+						&nbsp;&nbsp;&nbsp;确认密码:&nbsp;<input type="password" name=""
+							id="final_password" tabindex='8' />
+						<div class='warning' id='warning_3'>
+							<span>密码输入不一致</span>
+						</div>
+					</div>
+				</dt>
+				<dt>
+					<div>
+						<input type="button" name="" id="regist_button"
+							value='&nbsp注&nbsp册&nbsp' tabindex='9' /> <input type="button"
+							name="" id="back" value='&nbsp返&nbsp回&nbsp' tabindex='10' />
+						<script type="text/javascript">
+							function get(e){
+								return document.getElementById(e);
+							}
+							get('sig_in').onclick=function(){
+								get('dl').className='log log_out';
+								get('zc').className='sig sig_in';
+							}
+							get('back').onclick=function(){
+								get('zc').className='sig sig_out';
+								get('dl').className='log log_in';
+							}
+							window.onload=function(){
+								var t =setTimeout("get('zc').style.visibility='visible'",800);
+								get('final_password').onblur=function(){
+									var npassword=get('regist_password').value;
+									var fpassword=get('final_password').value;
+									if(npassword!=fpassword){
+										get('warning_3').style.display='block';
+									}
+								}
+								get('regist_password').onblur=function(){
+									var npassword=get('regist_password').value.length;
+									if(npassword<6&&npassword>0){
+										get('warning_2').style.display='block';
+									}
+								}
+								get('regist_password').onfocus=function(){
+									get('warning_2').style.display='none';
+								}
+								get('final_password').onfocus=function(){
+									get('warning_3').style.display='none';
+								}
+							}
+							</script>
+					</div>
+				</dt>
+			</dl>
+		</div>
+	</div>
+</body>
+</html>
