@@ -11,6 +11,9 @@
 
 <script type="text/javascript" src="scripts/baseValue.js">
 </script>
+<script type="text/javascript" src="scripts/local.js"></script>
+<script type="text/javascript" src="scripts/regist/regist.js"></script>
+<script type="text/javascript" src="scripts/regist/check.js"></script>
 <script type="text/javascript">
 	$(function(){
 		
@@ -52,7 +55,7 @@
 						}
 						else if(data.status=="0"){
 							//将令牌存入Cookie
-							var uid = data.data.id;
+							var uid = data.data.userId;
 							var token = data.data.token;
 							var key = uid+"_token";
 							addCookie(key,Base64.encode(token),2);//cookie中的key为uid_token,value为加密后的token,cookie的有效时长为2个小时
@@ -62,6 +65,7 @@
 				});				
 			}
 		});	
+		
 	});
 </script>
 
@@ -171,7 +175,7 @@
 									if(npassword<6&&npassword>0){
 										get('warning_2').style.display='block';
 									}
-								}
+								}								
 								get('regist_password').onfocus=function(){
 									get('warning_2').style.display='none';
 								}

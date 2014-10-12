@@ -1,0 +1,5 @@
+$(function(){
+	$("#add_notebook").click(function(){
+		$("#can").load("alert/alert_notebook.html")
+	});
+})
