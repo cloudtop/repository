@@ -9,18 +9,18 @@ function addnotebook(notebookname){
 				$("#tip").html(data.message);
 			}
 			else if(data.status=="0"){
-				//�������ݿ��еıʼǱ�
 				$("#can").hide();
-				$("#lists").empty();
+				//遍历数据库中的笔记本
+				$("#lists").html("<li class='online'><a  class='checked'><i class='fa fa-book' title='online' rel='tooltip-bottom'></i> 默认笔记本</a></li>");
 				$.ajax({
 					type:"get",
 					url:"http://localhost:8080/testNoteServer/NoteBook/findAllNoteBook",
 					success:function(data){
-						if(data!=""){			
-							for(i=0;i<data.length;i++){
-								var n = data.data[i];
+						if(data!=""){	
+							var list = data.data;
+							for(var i=0;i<list.length;i++){					
 								$("#lists").append(
-										"<li class='online'><a  class='checked'><i class='fa fa-book' title='online'rel='tooltip-bottom'></i>"+s.notebookName+"</a></li>"
+										"<li class='online'><a ><i class='fa fa-book' title='online'rel='tooltip-bottom'></i>"+list[i].notebookName+"</a></li>"
 										);
 							}	
 							}
