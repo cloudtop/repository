@@ -37,25 +37,9 @@ $(function(){
 					});
 					
 				};
-						$(".sd").click(function(){
-					$("#can").load("alert/alert_delete_notebook.html",function(){
-						$("#can").show();
-						$(".close").click(function(){
-							$("#can").hide();
-						});
-						$("#close").click(function(){
-							$("#can").hide();
-						});
-						$("#deletenotebook").click(function(){
-							$("#can").load("alert/alert_delete_rollback.html",function(){
-								$("#next").click(function(){
-									$("#can").hide();
-								});
-							});
-						});
-					});
+				$(".sd").click(function(){
+					$("#can").load("alert/alert_delete_notebook.html");
 				});
-				
 			};
 		}
 	});
