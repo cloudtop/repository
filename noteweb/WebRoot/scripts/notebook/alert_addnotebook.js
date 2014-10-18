@@ -120,7 +120,7 @@ $(function(){
 		});
 		
 	});
-	$("#rollback_button").click(function(){//查看某笔记本的回收站笔记
+$("#rollback_button").click(function(){//查看某笔记本的回收站笔记
 		$("#notelist").html("");
 		$("#pc_part_2").css("display","none");
 		$("#pc_part_4").css("display","block");
@@ -148,4 +148,3 @@ $(function(){
 
 	
 });
-
